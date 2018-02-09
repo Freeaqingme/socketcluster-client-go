@@ -1,10 +1,10 @@
 package scclient
 
 import (
+	"github.com/Freeaqingme/socketcluster-client-go/scclient/models"
+	"github.com/Freeaqingme/socketcluster-client-go/scclient/parser"
+	"github.com/Freeaqingme/socketcluster-client-go/scclient/utils"
 	"github.com/rgamba/evtwebsocket"
-	"github.com/sacOO7/socketcluster-client-go/scclient/models"
-	"github.com/sacOO7/socketcluster-client-go/scclient/parser"
-	"github.com/sacOO7/socketcluster-client-go/scclient/utils"
 	_ "golang.org/x/net/websocket"
 	"log"
 	_ "time"

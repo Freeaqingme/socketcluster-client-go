@@ -2,7 +2,7 @@ package tests
 
 import (
 	"encoding/json"
-	"github.com/sacOO7/socketcluster-client-go/scclient/utils"
+	"github.com/Freeaqingme/socketcluster-client-go/scclient/utils"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
