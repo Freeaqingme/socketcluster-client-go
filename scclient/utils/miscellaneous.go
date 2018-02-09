@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/rgamba/evtwebsocket"
-	"encoding/json"
 )
 
 func PrintMessage(message string) {
@@ -28,18 +28,18 @@ func CreateMessageFromString(message string) evtwebsocket.Msg {
 	}
 }
 
-func CreateMessageFromByte(message [] byte) evtwebsocket.Msg {
+func CreateMessageFromByte(message []byte) evtwebsocket.Msg {
 	return evtwebsocket.Msg{
 		Body: message,
 	}
 }
 
-func SerializeData(data interface{}) [] byte {
+func SerializeData(data interface{}) []byte {
 	b, _ := json.Marshal(data)
-	return b;
+	return b
 }
 
-func DeserializeData(data [] byte) (jsonObject interface{}) {
+func DeserializeData(data []byte) (jsonObject interface{}) {
 	json.Unmarshal(data, &jsonObject)
 	return
 }
