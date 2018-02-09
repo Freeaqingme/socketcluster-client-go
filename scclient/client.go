@@ -15,25 +15,25 @@ type Client struct {
 	url                 string
 	counter             utils.AtomicCounter
 	socket              *evtwebsocket.Conn
-	onConnect           func(client Client)
-	onConnectError      func(client Client, err error)
-	onDisconnect        func(client Client, err error)
-	onSetAuthentication func(client Client, token string)
-	onAuthentication    func(client Client, isAuthenticated bool)
+	onConnect           func(client *Client)
+	onConnectError      func(client *Client, err error)
+	onDisconnect        func(client *Client, err error)
+	onSetAuthentication func(client *Client, token string)
+	onAuthentication    func(client *Client, isAuthenticated bool)
 	Listener
 }
 
-func New(url string) Client {
-	return Client{url: url, counter: utils.AtomicCounter{Counter: 0}, Listener: Init()}
+func New(url string) *Client {
+	return &Client{url: url, counter: utils.AtomicCounter{Counter: 0}, Listener: Init()}
 }
 
-func (client *Client) SetBasicListener(onConnect func(client Client), onConnectError func(client Client, err error), onDisconnect func(client Client, err error)) {
+func (client *Client) SetBasicListener(onConnect func(client *Client), onConnectError func(client *Client, err error), onDisconnect func(client *Client, err error)) {
 	client.onConnect = onConnect
 	client.onConnectError = onConnectError
 	client.onDisconnect = onDisconnect
 }
 
-func (client *Client) SetAuthenticationListener(onSetAuthentication func(client Client, token string), onAuthentication func(client Client, isAuthenticated bool)) {
+func (client *Client) SetAuthenticationListener(onSetAuthentication func(client *Client, token string), onAuthentication func(client *Client, isAuthenticated bool)) {
 	client.onSetAuthentication = onSetAuthentication
 	client.onAuthentication = onAuthentication
 }
@@ -43,7 +43,7 @@ func (client *Client) registerCallbacks() {
 		// Fires when the connection is established
 		OnConnected: func(w *evtwebsocket.Conn) {
 			if client.onConnect != nil {
-				client.onConnect(*client)
+				client.onConnect(client)
 			}
 			client.sendHandshake()
 		},
@@ -63,12 +63,12 @@ func (client *Client) registerCallbacks() {
 				case parser.ISAUTHENTICATED:
 					isAuthenticated := utils.GetIsAuthenticated(messageObject)
 					if client.onAuthentication != nil {
-						client.onAuthentication(*client, isAuthenticated);
+						client.onAuthentication(client, isAuthenticated);
 					}
 				case parser.SETTOKEN:
 					token := utils.GetAuthToken(messageObject)
 					if client.onSetAuthentication != nil {
-						client.onSetAuthentication(*client, token)
+						client.onSetAuthentication(client, token)
 					}
 
 				case parser.REMOVETOKEN:
@@ -91,22 +91,24 @@ func (client *Client) registerCallbacks() {
 		// Fires when an error occurs and connection is closed
 		OnError: func(err error) {
 			if client.onDisconnect != nil {
-				client.onDisconnect(*client, err)
+				client.onDisconnect(client, err)
 			}
 		},
 	}
 
 }
 
-func (client *Client) Connect() {
+func (client *Client) Connect() error {
 	client.registerCallbacks()
 	// Connect
 	err := client.socket.Dial(client.url, "")
 	if err != nil {
 		if client.onConnectError != nil {
-			client.onConnectError(*client, err)
+			client.onConnectError(client, err)
 		}
 	}
+
+	return err
 }
 
 func (client *Client) sendHandshake() {

@@ -42,24 +42,24 @@ Different functions are given as an argument to register listeners
         	"fmt"
         )
         
-        func onConnect(client scclient.Client) {
+        func onConnect(client *scclient.Client) {
             fmt.Println("Connected to server")
         }
         
-        func onDisconnect(client scclient.Client, err error) {
+        func onDisconnect(client *scclient.Client, err error) {
             fmt.Printf("Error: %s\n", err.Error())
         }
         
-        func onConnectError(client scclient.Client, err error) {
+        func onConnectError(client *scclient.Client, err error) {
             fmt.Printf("Error: %s\n", err.Error())
         }
         
-        func onSetAuthentication(client scclient.Client, token string) {
+        func onSetAuthentication(client *scclient.Client, token string) {
             fmt.Println("Auth token received :", token)
         
         }
         
-        func onAuthentication(client scclient.Client, isAuthenticated bool) {
+        func onAuthentication(client *scclient.Client, isAuthenticated bool) {
             fmt.Println("Client authenticated :", isAuthenticated)
             go startCode(client)
         }  
@@ -77,7 +77,7 @@ Different functions are given as an argument to register listeners
         	// os.Exit(0)
         }
         
-        func startCode(client scclient.Client) {
+        func startCode(client *scclient.Client) {
         	// start writing your code from here
         	// All emit, receive and publish events
         }
