@@ -53,5 +53,8 @@ func TestShouldReturnMessageDetails(t *testing.T) {
 	assert.Equal(t, 1, cid)
 	assert.Equal(t, "#removeAuthToken", eventname)
 	assert.Equal(t, "This is a sample error", error)
+}
 
+func TestShouldNotPanicOnNilMessage(t *testing.T) {
+	parser.GetMessageDetails(nil)
 }
